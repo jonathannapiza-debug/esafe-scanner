@@ -7,532 +7,1124 @@
 
 <meta
   name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+  content="width=device-width,
+           initial-scale=1.0,
+           maximum-scale=1.0,
+           user-scalable=no,
+           viewport-fit=cover"
 >
 
-<meta name="theme-color" content="#b40000">
+<meta
+  name="theme-color"
+  content="#b30000"
+>
+
+<meta
+  name="apple-mobile-web-app-capable"
+  content="yes"
+>
+
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="black-translucent"
+>
 
 <title>PROJECT E-SAFE QR Scanner</title>
 
+
+<!-- =====================================================
+     QR SCANNER
+===================================================== -->
+
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
 
 <style>
 
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
+
 
 html,
-body{
-  width:100%;
-  height:100%;
-  margin:0;
-  padding:0;
-  overflow:hidden;
-  background:#000;
-  font-family:Arial,Helvetica,sans-serif;
+body {
+
+  width: 100%;
+  height: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  overflow: hidden;
+
+  background: #050505;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
 }
 
-body{
-  position:fixed;
-  inset:0;
+
+/* =====================================================
+   APP
+===================================================== */
+
+#app {
+
+  position: fixed;
+
+  inset: 0;
+
+  width: 100vw;
+  height: 100dvh;
+
+  overflow: hidden;
+
+  background:
+    #050505;
+
 }
 
-button,
-select{
-  font:inherit;
-}
 
-#app{
-  position:fixed;
-  inset:0;
-  width:100vw;
-  height:100dvh;
-  min-height:100vh;
-  overflow:hidden;
-  background:#000;
-}
-
-/* =========================================================
+/* =====================================================
    HEADER
-========================================================= */
+===================================================== */
 
-#header{
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:72px;
-  z-index:50;
+.header {
 
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 50;
+
+  height: 70px;
 
   padding:
     env(safe-area-inset-top)
     14px
-    10px
+    8px
     14px;
 
-  min-height:72px;
+  min-height: 70px;
 
-  background:rgba(0,0,0,.72);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
+  display: flex;
 
-  color:#fff;
+  align-items: center;
+
+  justify-content: space-between;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.88),
+      rgba(0,0,0,.30)
+    );
+
+  color: white;
+
 }
 
-#titleArea{
-  display:flex;
-  flex-direction:column;
-  min-width:0;
+
+.header-title {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
 }
 
-#appTitle{
-  font-size:18px;
-  font-weight:900;
-  line-height:1.1;
-  white-space:nowrap;
+
+.logo {
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 12px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #b30000;
+
+  font-size: 21px;
+
+  font-weight: 900;
+
 }
 
-#statusText{
-  margin-top:4px;
-  font-size:11px;
-  color:#ddd;
-  white-space:nowrap;
+
+.title-text {
+
+  line-height: 1.05;
+
 }
 
-#closeBtn{
-  width:42px;
-  height:42px;
-  border:0;
-  border-radius:50%;
-  background:rgba(255,255,255,.16);
-  color:#fff;
-  font-size:25px;
-  font-weight:700;
-  cursor:pointer;
+
+.title-main {
+
+  font-size: 16px;
+
+  font-weight: 900;
+
 }
 
-/* =========================================================
-   CAMERA
-========================================================= */
 
-#reader{
-  position:absolute;
-  inset:0;
-  width:100vw;
-  height:100dvh;
-  min-height:100vh;
-  overflow:hidden;
-  background:#000;
+.title-sub {
+
+  margin-top: 4px;
+
+  font-size: 10px;
+
+  opacity: .72;
+
+  letter-spacing: .5px;
+
 }
 
-#reader video{
-  width:100% !important;
-  height:100% !important;
-  object-fit:cover !important;
+
+/* =====================================================
+   EXIT BUTTON
+===================================================== */
+
+.close-button {
+
+  width: 42px;
+  height: 42px;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background:
+    rgba(255,255,255,.14);
+
+  color: white;
+
+  font-size: 24px;
+
+  cursor: pointer;
+
 }
 
-#reader canvas{
-  display:none !important;
+
+/* =====================================================
+   CAMERA AREA
+===================================================== */
+
+.camera-area {
+
+  position: absolute;
+
+  inset: 0;
+
+  overflow: hidden;
+
+  background: #000;
+
 }
 
-/* Hide html5-qrcode default UI */
-#reader__dashboard{
-  display:none !important;
+
+/*
+ * html5-qrcode container
+ */
+
+#reader {
+
+  position: absolute;
+
+  inset: 0;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  border: 0 !important;
+
+  overflow: hidden !important;
+
 }
 
-#reader__scan_region{
-  width:100% !important;
-  height:100% !important;
-  border:0 !important;
+
+#reader video {
+
+  width: 100% !important;
+
+  height: 100% !important;
+
+  object-fit: cover !important;
+
 }
 
-#reader__scan_region img{
-  display:none !important;
+
+#reader img {
+
+  display: none !important;
+
 }
 
-/* =========================================================
+
+#reader__scan_region {
+
+  width: 100% !important;
+  height: 100% !important;
+
+  border: 0 !important;
+
+}
+
+
+#reader__dashboard {
+
+  display: none !important;
+
+}
+
+
+/* =====================================================
+   CAMERA DARK OVERLAY
+===================================================== */
+
+.camera-overlay {
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 10;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.25),
+      transparent 25%,
+      transparent 72%,
+      rgba(0,0,0,.62)
+    );
+
+}
+
+
+/* =====================================================
    SCAN FRAME
-========================================================= */
+===================================================== */
 
-#scanOverlay{
-  position:absolute;
-  inset:0;
-  z-index:20;
-  pointer-events:none;
-}
+.scan-frame {
 
-#scanFrame{
-  position:absolute;
+  position: absolute;
 
-  left:50%;
-  top:50%;
+  z-index: 20;
 
-  width:min(76vw,360px);
-  height:min(76vw,360px);
+  left: 50%;
+  top: 50%;
 
-  transform:translate(-50%,-50%);
+  transform:
+    translate(-50%, -50%);
 
-  border:3px solid #fff;
-  border-radius:24px;
+  width:
+    min(78vw, 360px);
+
+  aspect-ratio: 1 / 1;
+
+  border-radius: 24px;
+
+  border:
+    3px solid
+    rgba(255,255,255,.92);
 
   box-shadow:
-    0 0 0 9999px rgba(0,0,0,.36),
-    0 0 25px rgba(255,255,255,.35);
+    0 0 0 9999px
+    rgba(0,0,0,.42),
+
+    0 0 30px
+    rgba(255,255,255,.18);
+
 }
 
-.corner{
-  position:absolute;
-  width:38px;
-  height:38px;
-  border-color:#ffdf00;
-  border-style:solid;
+
+/* =====================================================
+   CORNERS
+===================================================== */
+
+.corner {
+
+  position: absolute;
+
+  width: 38px;
+  height: 38px;
+
+  border-color: #ffd400;
+
+  border-style: solid;
+
 }
 
-.corner.tl{
-  top:-3px;
-  left:-3px;
-  border-width:6px 0 0 6px;
-  border-radius:20px 0 0 0;
+
+.corner.tl {
+
+  left: -3px;
+  top: -3px;
+
+  border-width:
+    5px 0 0 5px;
+
+  border-radius:
+    20px 0 0 0;
+
 }
 
-.corner.tr{
-  top:-3px;
-  right:-3px;
-  border-width:6px 6px 0 0;
-  border-radius:0 20px 0 0;
+
+.corner.tr {
+
+  right: -3px;
+  top: -3px;
+
+  border-width:
+    5px 5px 0 0;
+
+  border-radius:
+    0 20px 0 0;
+
 }
 
-.corner.bl{
-  bottom:-3px;
-  left:-3px;
-  border-width:0 0 6px 6px;
-  border-radius:0 0 0 20px;
+
+.corner.bl {
+
+  left: -3px;
+  bottom: -3px;
+
+  border-width:
+    0 0 5px 5px;
+
+  border-radius:
+    0 0 0 20px;
+
 }
 
-.corner.br{
-  bottom:-3px;
-  right:-3px;
-  border-width:0 6px 6px 0;
-  border-radius:0 0 20px 0;
+
+.corner.br {
+
+  right: -3px;
+  bottom: -3px;
+
+  border-width:
+    0 5px 5px 0;
+
+  border-radius:
+    0 0 20px 0;
+
 }
 
-#scanHint{
-  position:absolute;
-  top:calc(50% + min(38vw,180px) + 22px);
-  left:50%;
-  transform:translateX(-50%);
 
-  width:90%;
-  text-align:center;
+/* =====================================================
+   SCAN LINE
+===================================================== */
 
-  color:#fff;
-  font-size:14px;
-  font-weight:700;
+.scan-line {
 
-  text-shadow:0 2px 4px #000;
+  position: absolute;
+
+  left: 8%;
+  right: 8%;
+
+  top: 15%;
+
+  height: 3px;
+
+  border-radius: 5px;
+
+  background:
+    #ffd400;
+
+  box-shadow:
+    0 0 12px
+    rgba(255,212,0,.8);
+
+  animation:
+    scanLine 2.2s
+    ease-in-out
+    infinite;
+
 }
 
-/* =========================================================
-   BOTTOM CONTROLS
-========================================================= */
 
-#controls{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
-  z-index:50;
+@keyframes scanLine {
+
+  0% {
+    top: 12%;
+  }
+
+  50% {
+    top: 88%;
+  }
+
+  100% {
+    top: 12%;
+  }
+
+}
+
+
+/* =====================================================
+   MODE SELECTOR
+===================================================== */
+
+.mode-panel {
+
+  position: absolute;
+
+  z-index: 30;
+
+  left: 50%;
+
+  top: 82px;
+
+  transform:
+    translateX(-50%);
+
+  display: flex;
+
+  padding: 4px;
+
+  border-radius: 14px;
+
+  background:
+    rgba(0,0,0,.60);
+
+  backdrop-filter:
+    blur(12px);
+
+}
+
+
+.mode-button {
+
+  min-width: 105px;
+
+  height: 42px;
+
+  border: 0;
+
+  border-radius: 10px;
+
+  color: white;
+
+  background:
+    transparent;
+
+  font-size: 13px;
+
+  font-weight: 900;
+
+}
+
+
+.mode-button.active {
+
+  background:
+    #b30000;
+
+}
+
+
+/* =====================================================
+   INSTRUCTION
+===================================================== */
+
+.instruction {
+
+  position: absolute;
+
+  z-index: 30;
+
+  top: calc(
+    50% +
+    min(39vw, 180px)
+  );
+
+  left: 50%;
+
+  transform:
+    translateX(-50%);
+
+  width: 90%;
+
+  text-align: center;
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  text-shadow:
+    0 2px 5px #000;
+
+}
+
+
+/* =====================================================
+   BOTTOM PANEL
+===================================================== */
+
+.bottom-panel {
+
+  position: absolute;
+
+  z-index: 40;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
 
   padding:
-    12px
+    10px
     14px
-    calc(14px + env(safe-area-inset-bottom))
-    14px;
+    calc(
+      14px +
+      env(safe-area-inset-bottom)
+    );
 
-  background:linear-gradient(
-    to top,
-    rgba(0,0,0,.94),
-    rgba(0,0,0,.72),
-    rgba(0,0,0,0)
-  );
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(0,0,0,.92) 30%
+    );
+
 }
 
-.controlRow{
-  display:flex;
-  gap:8px;
-  width:100%;
+
+/* =====================================================
+   CAMERA BUTTONS
+===================================================== */
+
+.controls {
+
+  display: flex;
+
+  gap: 8px;
+
 }
 
-.controlGroup{
-  flex:1;
-  min-width:0;
+
+.control-button {
+
+  flex: 1;
+
+  min-height: 48px;
+
+  border: 0;
+
+  border-radius: 13px;
+
+  font-size: 13px;
+
+  font-weight: 900;
+
+  color: white;
+
+  background:
+    rgba(255,255,255,.15);
+
 }
 
-.controlLabel{
-  color:#fff;
-  font-size:10px;
-  font-weight:800;
-  margin-bottom:5px;
-  text-transform:uppercase;
+
+.control-button.primary {
+
+  background:
+    #b30000;
+
 }
 
-select,
-.actionBtn{
-  width:100%;
-  height:46px;
 
-  border:0;
-  border-radius:12px;
+.control-button:disabled {
 
-  padding:0 12px;
+  opacity: .45;
 
-  font-size:14px;
-  font-weight:800;
 }
 
-select{
-  background:#fff;
-  color:#111;
+
+/* =====================================================
+   CAMERA SELECT
+===================================================== */
+
+.camera-select {
+
+  width: 100%;
+
+  height: 42px;
+
+  margin-top: 8px;
+
+  padding:
+    0 12px;
+
+  border: 1px solid
+    rgba(255,255,255,.2);
+
+  border-radius: 12px;
+
+  background:
+    rgba(0,0,0,.65);
+
+  color: white;
+
+  outline: none;
+
 }
 
-.actionBtn{
-  background:#b40000;
-  color:#fff;
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.status {
+
+  margin-bottom: 8px;
+
+  padding:
+    9px
+    12px;
+
+  border-radius: 12px;
+
+  background:
+    rgba(0,0,0,.58);
+
+  color: white;
+
+  text-align: center;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
 }
 
-.actionBtn:active{
-  transform:scale(.98);
+
+.status.success {
+
+  background:
+    rgba(0,130,70,.88);
+
 }
 
-#startBtn{
-  background:#078a35;
+
+.status.error {
+
+  background:
+    rgba(180,0,0,.88);
+
 }
 
-#stopBtn{
-  background:#444;
+
+.status.warning {
+
+  background:
+    rgba(170,110,0,.90);
+
 }
 
-.actionBtn:disabled{
-  opacity:.45;
-}
 
-/* =========================================================
-   API / CAMERA STATUS
-========================================================= */
-
-#connectionStatus{
-  position:absolute;
-  top:82px;
-  left:50%;
-  transform:translateX(-50%);
-
-  z-index:60;
-
-  padding:7px 12px;
-
-  border-radius:20px;
-
-  background:rgba(0,0,0,.65);
-  color:#fff;
-
-  font-size:11px;
-  font-weight:700;
-
-  white-space:nowrap;
-}
-
-/* =========================================================
+/* =====================================================
    RESULT MODAL
-========================================================= */
+===================================================== */
 
-#resultModal{
-  position:absolute;
-  inset:0;
-  z-index:100;
+.result-overlay {
 
-  display:none;
-  align-items:center;
-  justify-content:center;
+  position: fixed;
 
-  padding:20px;
+  inset: 0;
 
-  background:rgba(0,0,0,.76);
+  z-index: 100;
+
+  display: none;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    rgba(0,0,0,.78);
+
+  backdrop-filter:
+    blur(8px);
+
 }
 
-#resultCard{
-  width:min(92vw,430px);
-  max-height:85vh;
-  overflow:auto;
 
-  background:#fff;
-  border-radius:24px;
+.result-overlay.show {
 
-  padding:24px 20px;
+  display: flex;
 
-  text-align:center;
-
-  box-shadow:0 20px 60px rgba(0,0,0,.5);
 }
 
-#resultIcon{
-  width:74px;
-  height:74px;
 
-  margin:0 auto 14px;
+.result-card {
 
-  border-radius:50%;
+  width: 100%;
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  max-width: 420px;
 
-  font-size:38px;
-  font-weight:900;
+  max-height: 88vh;
 
-  background:#078a35;
-  color:#fff;
+  overflow: auto;
+
+  border-radius: 24px;
+
+  background:
+    white;
+
+  box-shadow:
+    0 20px 60px
+    rgba(0,0,0,.5);
+
 }
 
-#resultTitle{
-  font-size:23px;
-  font-weight:900;
-  margin-bottom:8px;
+
+.result-header {
+
+  padding: 22px;
+
+  text-align: center;
+
+  color: white;
+
+  background:
+    #008244;
+
 }
 
-#resultMessage{
-  font-size:14px;
-  line-height:1.5;
-  color:#444;
-  margin-bottom:16px;
+
+.result-header.error {
+
+  background:
+    #b30000;
+
 }
 
-#studentInfo{
-  display:none;
 
-  margin:12px 0;
+.result-icon {
 
-  padding:14px;
+  font-size: 45px;
 
-  background:#f4f4f4;
-  border-radius:14px;
-
-  text-align:left;
 }
 
-.infoRow{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
 
-  padding:5px 0;
+.result-title {
 
-  font-size:13px;
+  margin-top: 8px;
+
+  font-size: 22px;
+
+  font-weight: 900;
+
 }
 
-.infoLabel{
-  color:#777;
-  font-weight:700;
+
+.result-body {
+
+  padding: 20px;
+
 }
 
-.infoValue{
-  color:#111;
-  font-weight:900;
-  text-align:right;
+
+.student-photo {
+
+  display: block;
+
+  width: 105px;
+  height: 105px;
+
+  margin:
+    0 auto 15px;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  border:
+    5px solid #eee;
+
 }
 
-#resultCloseBtn{
-  width:100%;
-  height:48px;
 
-  border:0;
-  border-radius:14px;
+.student-name {
 
-  background:#b40000;
-  color:#fff;
+  text-align: center;
 
-  font-size:15px;
-  font-weight:900;
+  font-size: 21px;
+
+  font-weight: 900;
+
+  color: #222;
+
 }
 
-/* =========================================================
+
+.student-info {
+
+  margin-top: 14px;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  border:
+    1px solid #eee;
+
+}
+
+
+.info-row {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding:
+    11px 13px;
+
+  border-bottom:
+    1px solid #eee;
+
+  font-size: 13px;
+
+}
+
+
+.info-row:last-child {
+
+  border-bottom: 0;
+
+}
+
+
+.info-label {
+
+  color: #777;
+
+}
+
+
+.info-value {
+
+  font-weight: 800;
+
+  text-align: right;
+
+}
+
+
+.result-time {
+
+  margin-top: 16px;
+
+  text-align: center;
+
+  font-size: 13px;
+
+  color: #777;
+
+}
+
+
+.result-close {
+
+  width: 100%;
+
+  height: 50px;
+
+  margin-top: 18px;
+
+  border: 0;
+
+  border-radius: 13px;
+
+  background:
+    #b30000;
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 900;
+
+}
+
+
+/* =====================================================
    LOADING
-========================================================= */
+===================================================== */
 
-#loading{
-  position:absolute;
-  inset:0;
+.loading {
 
-  z-index:90;
+  position: fixed;
 
-  display:none;
+  inset: 0;
 
-  align-items:center;
-  justify-content:center;
+  z-index: 200;
 
-  background:rgba(0,0,0,.58);
+  display: none;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background:
+    rgba(0,0,0,.72);
+
 }
 
-.loadingBox{
-  padding:20px 25px;
-  border-radius:18px;
-  background:#fff;
-  text-align:center;
+
+.loading.show {
+
+  display: flex;
+
 }
 
-.spinner{
-  width:40px;
-  height:40px;
 
-  margin:0 auto 12px;
+.loading-card {
 
-  border:4px solid #ddd;
-  border-top-color:#b40000;
+  padding:
+    25px 30px;
 
-  border-radius:50%;
+  border-radius: 20px;
 
-  animation:spin .8s linear infinite;
+  background:
+    white;
+
+  text-align: center;
+
 }
 
-.loadingText{
-  font-size:14px;
-  font-weight:800;
+
+.spinner {
+
+  width: 42px;
+  height: 42px;
+
+  margin: 0 auto 12px;
+
+  border:
+    4px solid #ddd;
+
+  border-top-color:
+    #b30000;
+
+  border-radius: 50%;
+
+  animation:
+    spin .8s
+    linear
+    infinite;
+
 }
 
-@keyframes spin{
-  to{
-    transform:rotate(360deg);
+
+@keyframes spin {
+
+  to {
+    transform:
+      rotate(360deg);
   }
+
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
 
-@media(max-width:380px){
+/* =====================================================
+   MOBILE
+===================================================== */
 
-  #header{
-    height:66px;
-    min-height:66px;
+@media
+(max-width: 600px) {
+
+  .header {
+
+    height: 68px;
+
   }
 
-  #appTitle{
-    font-size:16px;
+
+  .mode-panel {
+
+    top: 76px;
+
   }
 
-  .actionBtn,
-  select{
-    height:43px;
-    font-size:12px;
+
+  .mode-button {
+
+    min-width: 92px;
+
   }
 
-  #scanHint{
-    font-size:12px;
+
+  .scan-frame {
+
+    width:
+      min(80vw, 330px);
+
+  }
+
+}
+
+
+/* =====================================================
+   LANDSCAPE
+===================================================== */
+
+@media
+(orientation: landscape)
+and
+(max-height: 600px) {
+
+  .mode-panel {
+
+    top: 70px;
+
+  }
+
+
+  .scan-frame {
+
+    height:
+      min(68vh, 330px);
+
+    width:
+      min(68vh, 330px);
+
+  }
+
+
+  .instruction {
+
+    top:
+      calc(
+        50% +
+        min(34vh, 170px)
+      );
+
   }
 
 }
@@ -541,56 +1133,44 @@ select{
 
 </head>
 
+
 <body>
+
 
 <div id="app">
 
-  <!-- =====================================================
-       CAMERA
-  ====================================================== -->
 
-  <div id="reader"></div>
-
-  <div id="scanOverlay">
-
-    <div id="scanFrame">
-
-      <div class="corner tl"></div>
-      <div class="corner tr"></div>
-      <div class="corner bl"></div>
-      <div class="corner br"></div>
-
-    </div>
-
-    <div id="scanHint">
-      Align the student's E-SAFE QR code inside the frame
-    </div>
-
-  </div>
-
-
-  <!-- =====================================================
+  <!-- =================================================
        HEADER
-  ====================================================== -->
+  ================================================== -->
 
-  <div id="header">
+  <div class="header">
 
-    <div id="titleArea">
+    <div class="header-title">
 
-      <div id="appTitle">
-        PROJECT E-SAFE
+      <div class="logo">
+        QR
       </div>
 
-      <div id="statusText">
-        Standalone Mobile QR Scanner
+      <div class="title-text">
+
+        <div class="title-main">
+          PROJECT E-SAFE
+        </div>
+
+        <div class="title-sub">
+          SCHOOL SAFETY & ATTENDANCE
+        </div>
+
       </div>
 
     </div>
+
 
     <button
-      id="closeBtn"
-      type="button"
+      class="close-button"
       onclick="closeScanner()"
+      aria-label="Close scanner"
     >
       ×
     </button>
@@ -598,230 +1178,223 @@ select{
   </div>
 
 
-  <!-- =====================================================
-       CONNECTION STATUS
-  ====================================================== -->
+  <!-- =================================================
+       CAMERA
+  ================================================== -->
 
-  <div id="connectionStatus">
-    API: CHECKING...
-  </div>
+  <div class="camera-area">
 
+    <div id="reader"></div>
 
-  <!-- =====================================================
-       CONTROLS
-  ====================================================== -->
-
-  <div id="controls">
-
-    <div class="controlRow">
-
-      <div class="controlGroup">
-
-        <div class="controlLabel">
-          Attendance
-        </div>
-
-        <select id="attendanceType">
-
-          <option value="ENTRY">
-            ENTRY
-          </option>
-
-          <option value="EXIT">
-            EXIT
-          </option>
-
-        </select>
-
-      </div>
+    <div class="camera-overlay"></div>
 
 
-      <div class="controlGroup">
+    <div class="scan-frame">
 
-        <div class="controlLabel">
-          Camera
-        </div>
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
 
-        <select id="cameraSelect">
-
-          <option value="">
-            Auto / Rear Camera
-          </option>
-
-        </select>
-
-      </div>
+      <div class="scan-line"></div>
 
     </div>
 
+
+    <div class="instruction">
+
+      Position the student's QR code
+      inside the frame.
+
+    </div>
+
+  </div>
+
+
+  <!-- =================================================
+       MODE
+  ================================================== -->
+
+  <div class="mode-panel">
+
+    <button
+      id="entryButton"
+      class="mode-button active"
+      onclick="setMode('ENTRY')"
+    >
+      ENTRY
+    </button>
+
+    <button
+      id="exitButton"
+      class="mode-button"
+      onclick="setMode('EXIT')"
+    >
+      EXIT
+    </button>
+
+  </div>
+
+
+  <!-- =================================================
+       BOTTOM
+  ================================================== -->
+
+  <div class="bottom-panel">
 
     <div
-      class="controlRow"
-      style="margin-top:8px;"
+      id="status"
+      class="status"
+    >
+      Camera is stopped.
+    </div>
+
+
+    <div class="controls">
+
+      <button
+        id="startButton"
+        class="control-button primary"
+        onclick="startCamera()"
+      >
+        START CAMERA
+      </button>
+
+      <button
+        id="stopButton"
+        class="control-button"
+        onclick="stopCamera()"
+        disabled
+      >
+        STOP
+      </button>
+
+    </div>
+
+
+    <select
+      id="cameraSelect"
+      class="camera-select"
+      onchange="changeCamera()"
     >
 
-      <div class="controlGroup">
+      <option value="">
+        Camera selection
+      </option>
 
-        <button
-          id="startBtn"
-          class="actionBtn"
-          type="button"
-          onclick="startCamera()"
-        >
-          START CAMERA
-        </button>
-
-      </div>
-
-
-      <div class="controlGroup">
-
-        <button
-          id="stopBtn"
-          class="actionBtn"
-          type="button"
-          onclick="stopCamera()"
-          disabled
-        >
-          STOP
-        </button>
-
-      </div>
-
-    </div>
+    </select>
 
   </div>
 
+</div>
 
-  <!-- =====================================================
-       LOADING
-  ====================================================== -->
 
-  <div id="loading">
+<!-- =====================================================
+     RESULT
+===================================================== -->
 
-    <div class="loadingBox">
+<div
+  id="resultOverlay"
+  class="result-overlay"
+>
 
-      <div class="spinner"></div>
+  <div class="result-card">
+
+    <div
+      id="resultHeader"
+      class="result-header"
+    >
 
       <div
-        class="loadingText"
-        id="loadingText"
+        id="resultIcon"
+        class="result-icon"
       >
-        Processing scan...
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- =====================================================
-       RESULT MODAL
-  ====================================================== -->
-
-  <div id="resultModal">
-
-    <div id="resultCard">
-
-      <div id="resultIcon">
         ✓
       </div>
 
-      <div id="resultTitle">
-        SUCCESS
+      <div
+        id="resultTitle"
+        class="result-title"
+      >
+        Attendance Recorded
       </div>
 
-      <div id="resultMessage">
-        Attendance recorded successfully.
+    </div>
+
+
+    <div class="result-body">
+
+      <img
+        id="studentPhoto"
+        class="student-photo"
+        style="display:none"
+        alt="Student"
+      >
+
+
+      <div
+        id="studentName"
+        class="student-name"
+      >
       </div>
 
 
-      <div id="studentInfo">
+      <div class="student-info">
 
-        <div class="infoRow">
+        <div class="info-row">
 
-          <span class="infoLabel">
-            Student
-          </span>
-
-          <span
-            class="infoValue"
-            id="studentName"
-          >
-          </span>
-
-        </div>
-
-
-        <div class="infoRow">
-
-          <span class="infoLabel">
+          <span class="info-label">
             LRN
           </span>
 
           <span
-            class="infoValue"
             id="studentLRN"
+            class="info-value"
           >
           </span>
 
         </div>
 
 
-        <div class="infoRow">
+        <div class="info-row">
 
-          <span class="infoLabel">
+          <span class="info-label">
             Grade
           </span>
 
           <span
-            class="infoValue"
             id="studentGrade"
+            class="info-value"
           >
           </span>
 
         </div>
 
 
-        <div class="infoRow">
+        <div class="info-row">
 
-          <span class="infoLabel">
+          <span class="info-label">
             Section
           </span>
 
           <span
-            class="infoValue"
             id="studentSection"
+            class="info-value"
           >
           </span>
 
         </div>
 
 
-        <div class="infoRow">
+        <div class="info-row">
 
-          <span class="infoLabel">
-            Type
+          <span class="info-label">
+            Status
           </span>
 
           <span
-            class="infoValue"
-            id="attendanceResultType"
-          >
-          </span>
-
-        </div>
-
-
-        <div class="infoRow">
-
-          <span class="infoLabel">
-            Time
-          </span>
-
-          <span
-            class="infoValue"
-            id="attendanceResultTime"
+            id="studentStatus"
+            class="info-value"
           >
           </span>
 
@@ -830,12 +1403,18 @@ select{
       </div>
 
 
+      <div
+        id="resultTime"
+        class="result-time"
+      >
+      </div>
+
+
       <button
-        id="resultCloseBtn"
-        type="button"
+        class="result-close"
         onclick="closeResult()"
       >
-        SCAN NEXT
+        SCAN NEXT STUDENT
       </button>
 
     </div>
@@ -845,32 +1424,78 @@ select{
 </div>
 
 
+<!-- =====================================================
+     LOADING
+===================================================== -->
+
+<div
+  id="loading"
+  class="loading"
+>
+
+  <div class="loading-card">
+
+    <div class="spinner"></div>
+
+    <strong>
+      Recording attendance...
+    </strong>
+
+  </div>
+
+</div>
+
+
 <script>
 
-/* ==========================================================
-   E-SAFE CONFIGURATION
-========================================================== */
+/* =====================================================
+   CONFIGURATION
+===================================================== */
+
+
+/*
+ * IMPORTANT:
+ *
+ * Replace this with your deployed Apps Script
+ * Web App /exec URL.
+ *
+ * Example:
+ *
+ * https://script.google.com/macros/s/XXXXXXXXXXXX/exec
+ */
 
 const API_URL =
   'https://script.google.com/macros/s/AKfycbwRW7wHP_Y6ZkZXdiDP8OrIqkV2e2f94pyEmrErNId80O1ODMUyKwTyE1uHF3BNDgk/exec';
 
+
+/*
+ * This must exactly match ESAFE_CONFIG.SCANNER_API_KEY
+ * in Code.gs.
+ */
+
 const API_KEY =
   'ESAFE-SCANNER-2026-AIS-501538';
+
 
 const SCANNER_NAME =
   'Standalone Mobile QR Scanner';
 
-const QR_PREFIX =
-  'ESAFE-';
 
+/* =====================================================
+   STATE
+===================================================== */
 
-/* ==========================================================
-   SCANNER STATE
-========================================================== */
-
-let html5QrCode = null;
+let scanner = null;
 
 let scannerRunning = false;
+
+let startingCamera = false;
+
+let availableCameras = [];
+
+let selectedCameraId = '';
+
+let attendanceMode = 'ENTRY';
 
 let scanLocked = false;
 
@@ -878,620 +1503,622 @@ let lastScannedToken = '';
 
 let lastScanTime = 0;
 
-const CLIENT_COOLDOWN_MS = 5000;
 
+/* =====================================================
+   ELEMENTS
+===================================================== */
 
-/* ==========================================================
-   DOM
-========================================================== */
+const statusElement =
+  document.getElementById(
+    'status'
+  );
 
-const reader =
-  document.getElementById('reader');
 
 const cameraSelect =
-  document.getElementById('cameraSelect');
-
-const attendanceType =
-  document.getElementById('attendanceType');
-
-const startBtn =
-  document.getElementById('startBtn');
-
-const stopBtn =
-  document.getElementById('stopBtn');
-
-const connectionStatus =
-  document.getElementById('connectionStatus');
-
-const resultModal =
-  document.getElementById('resultModal');
-
-const resultIcon =
-  document.getElementById('resultIcon');
-
-const resultTitle =
-  document.getElementById('resultTitle');
-
-const resultMessage =
-  document.getElementById('resultMessage');
-
-const studentInfo =
-  document.getElementById('studentInfo');
-
-const loading =
-  document.getElementById('loading');
-
-const loadingText =
-  document.getElementById('loadingText');
+  document.getElementById(
+    'cameraSelect'
+  );
 
 
-/* ==========================================================
+const startButton =
+  document.getElementById(
+    'startButton'
+  );
+
+
+const stopButton =
+  document.getElementById(
+    'stopButton'
+  );
+
+
+/* =====================================================
    INITIALIZE
-========================================================== */
+===================================================== */
 
 document.addEventListener(
   'DOMContentLoaded',
-  function(){
+  function() {
 
-    checkApiHealth();
+    /*
+     * Do not request camera permission
+     * automatically on page load.
+     *
+     * Mobile browsers behave more reliably
+     * when getUserMedia() is triggered by
+     * a user action.
+     */
+
+    setStatus(
+      'Tap START CAMERA to begin.',
+      ''
+    );
+
+
+    /*
+     * Try to enumerate cameras.
+     *
+     * Some mobile browsers may return empty
+     * labels before permission is granted.
+     */
+
+    refreshCameras();
 
   }
 );
 
 
-/* ==========================================================
-   API HEALTH CHECK
-========================================================== */
+/* =====================================================
+   MODE
+===================================================== */
 
-function checkApiHealth(){
+function setMode(
+  mode
+) {
 
-  setConnectionStatus(
-    'API: CHECKING...'
-  );
-
-  jsonpRequest(
-    {
-      api:'scanner',
-      action:'health',
-      apiKey:API_KEY
-    },
-    function(response){
-
-      if(
-        response &&
-        response.success === true
-      ){
-
-        setConnectionStatus(
-          'API: CONNECTED'
-        );
-
-      }
-      else{
-
-        setConnectionStatus(
-          'API: ERROR'
-        );
-
-        console.error(
-          '[E-SAFE HEALTH ERROR]',
-          response
-        );
-
-      }
-
-    },
-    function(error){
-
-      setConnectionStatus(
-        'API: OFFLINE'
-      );
-
-      console.error(
-        '[E-SAFE HEALTH CONNECTION ERROR]',
-        error
-      );
-
-    }
-  );
-
-}
+  mode =
+    String(
+      mode ||
+      'ENTRY'
+    )
+    .toUpperCase();
 
 
-/* ==========================================================
-   CONNECTION STATUS
-========================================================== */
+  if (
+    mode !== 'ENTRY' &&
+    mode !== 'EXIT'
+  ) {
 
-function setConnectionStatus(text){
-
-  connectionStatus.textContent =
-    text;
-
-}
-
-
-/* ==========================================================
-   JSONP REQUEST
-========================================================== */
-
-function jsonpRequest(
-  params,
-  onSuccess,
-  onError
-){
-
-  const callbackName =
-    '__esafe_jsonp_' +
-    Date.now() +
-    '_' +
-    Math.floor(
-      Math.random() * 100000
-    );
-
-  let script = null;
-
-  let timeoutId = null;
-
-  let finished = false;
-
-
-  function cleanup(){
-
-    if(timeoutId){
-
-      clearTimeout(
-        timeoutId
-      );
-
-    }
-
-    try{
-
-      delete window[
-        callbackName
-      ];
-
-    }
-    catch(e){
-
-      window[
-        callbackName
-      ] = undefined;
-
-    }
-
-    if(script){
-
-      script.onload = null;
-      script.onerror = null;
-
-      if(script.parentNode){
-
-        script.parentNode.removeChild(
-          script
-        );
-
-      }
-
-    }
+    mode =
+      'ENTRY';
 
   }
 
 
-  function finishSuccess(data){
+  attendanceMode =
+    mode;
 
-    if(finished){
+
+  document
+    .getElementById(
+      'entryButton'
+    )
+    .classList
+    .toggle(
+      'active',
+      mode === 'ENTRY'
+    );
+
+
+  document
+    .getElementById(
+      'exitButton'
+    )
+    .classList
+    .toggle(
+      'active',
+      mode === 'EXIT'
+    );
+
+
+  setStatus(
+    mode +
+    ' mode selected.',
+    ''
+  );
+
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+function setStatus(
+  message,
+  type
+) {
+
+  statusElement.textContent =
+    message;
+
+
+  statusElement.className =
+    'status';
+
+
+  if (type) {
+
+    statusElement.classList.add(
+      type
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   CAMERA SUPPORT
+===================================================== */
+
+function checkCameraSupport() {
+
+  if (
+    !window.isSecureContext
+  ) {
+
+    throw new Error(
+      'Camera requires HTTPS. Open the scanner using the HTTPS website URL.'
+    );
+
+  }
+
+
+  if (
+    !navigator.mediaDevices
+  ) {
+
+    throw new Error(
+      'This browser does not provide camera access.'
+    );
+
+  }
+
+
+  if (
+    !navigator.mediaDevices.getUserMedia
+  ) {
+
+    throw new Error(
+      'Camera access is not supported by this browser.'
+    );
+
+  }
+
+
+  if (
+    typeof Html5Qrcode ===
+    'undefined'
+  ) {
+
+    throw new Error(
+      'QR scanner library failed to load.'
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   REFRESH CAMERAS
+===================================================== */
+
+async function refreshCameras() {
+
+  try {
+
+    if (
+      typeof Html5Qrcode ===
+      'undefined'
+    ) {
 
       return;
 
     }
 
-    finished = true;
-
-    cleanup();
-
-    onSuccess(data);
-
-  }
-
-
-  function finishError(error){
-
-    if(finished){
-
-      return;
-
-    }
-
-    finished = true;
-
-    cleanup();
-
-    onError(error);
-
-  }
-
-
-  window[
-    callbackName
-  ] = function(data){
-
-    finishSuccess(data);
-
-  };
-
-
-  const query =
-    new URLSearchParams();
-
-
-  Object.keys(params).forEach(
-    function(key){
-
-      if(
-        params[key] !== undefined &&
-        params[key] !== null
-      ){
-
-        query.set(
-          key,
-          String(params[key])
-        );
-
-      }
-
-    }
-  );
-
-
-  query.set(
-    'callback',
-    callbackName
-  );
-
-
-  const requestUrl =
-    API_URL +
-    '?' +
-    query.toString();
-
-
-  console.log(
-    '[E-SAFE JSONP REQUEST]',
-    requestUrl
-  );
-
-
-  script =
-    document.createElement(
-      'script'
-    );
-
-
-  script.src =
-    requestUrl;
-
-
-  script.async = true;
-
-
-  script.onerror =
-    function(){
-
-      finishError(
-        new Error(
-          'JSONP script failed to load.'
-        )
-      );
-
-    };
-
-
-  script.onload =
-    function(){
-
-      /*
-       * IMPORTANT:
-       *
-       * JSONP may execute the callback
-       * before onload fires.
-       *
-       * If callback already completed,
-       * finished === true.
-       *
-       * Otherwise allow a short moment
-       * for the callback.
-       */
-
-      setTimeout(
-        function(){
-
-          if(!finished){
-
-            finishError(
-              new Error(
-                'API returned no JSONP callback.'
-              )
-            );
-
-          }
-
-        },
-        100
-      );
-
-    };
-
-
-  timeoutId =
-    setTimeout(
-      function(){
-
-        finishError(
-          new Error(
-            'E-SAFE API request timed out.'
-          )
-        );
-
-      },
-      15000
-    );
-
-
-  document.body.appendChild(
-    script
-  );
-
-}
-
-
-/* ==========================================================
-   GET CAMERAS
-========================================================== */
-
-async function getCameras(){
-
-  try{
 
     const cameras =
       await Html5Qrcode.getCameras();
 
 
-    console.log(
-      '[E-SAFE AVAILABLE CAMERAS]',
-      cameras
-    );
+    availableCameras =
+      Array.isArray(cameras)
+        ? cameras
+        : [];
 
 
-    cameraSelect.innerHTML = '';
+    populateCameraList();
 
-
-    if(
-      !cameras ||
-      cameras.length === 0
-    ){
-
-      const option =
-        document.createElement(
-          'option'
-        );
-
-      option.value = '';
-
-      option.textContent =
-        'No camera found';
-
-      cameraSelect.appendChild(
-        option
-      );
-
-      return [];
-
-    }
-
-
-    cameras.forEach(
-      function(camera,index){
-
-        const option =
-          document.createElement(
-            'option'
-          );
-
-        option.value =
-          camera.id;
-
-        let label =
-          camera.label ||
-          ('Camera ' + (index + 1));
-
-
-        if(
-          /back|rear|environment/i.test(
-            label
-          )
-        ){
-
-          label +=
-            ' — REAR';
-
-        }
-
-
-        option.textContent =
-          label;
-
-
-        cameraSelect.appendChild(
-          option
-        );
-
-      }
-    );
-
-
-    /*
-     * Prefer rear/environment camera.
-     */
-
-    const rearCamera =
-      cameras.find(
-        function(camera){
-
-          return /back|rear|environment/i.test(
-            camera.label || ''
-          );
-
-        }
-      );
-
-
-    if(rearCamera){
-
-      cameraSelect.value =
-        rearCamera.id;
-
-    }
-    else{
-
-      cameraSelect.value =
-        cameras[0].id;
-
-    }
-
-
-    return cameras;
 
   }
-  catch(error){
+  catch (error) {
 
-    console.error(
-      '[E-SAFE CAMERA ENUMERATION ERROR]',
+    console.log(
+      '[E-SAFE CAMERA ENUMERATION]',
       error
     );
-
-    throw error;
 
   }
 
 }
 
 
-/* ==========================================================
-   START CAMERA
-========================================================== */
+/* =====================================================
+   POPULATE CAMERA LIST
+===================================================== */
 
-async function startCamera(){
+function populateCameraList() {
 
-  if(scannerRunning){
+  cameraSelect.innerHTML =
+    '';
+
+
+  if (
+    availableCameras.length === 0
+  ) {
+
+    const option =
+      document.createElement(
+        'option'
+      );
+
+
+    option.value =
+      '';
+
+
+    option.textContent =
+      'Camera will appear after permission';
+
+
+    cameraSelect.appendChild(
+      option
+    );
+
 
     return;
 
   }
 
 
-  try{
-
-    startBtn.disabled =
-      true;
+  let rearCamera =
+    null;
 
 
-    setConnectionStatus(
-      'CAMERA: STARTING...'
-    );
+  availableCameras.forEach(
+    function(camera) {
+
+      const label =
+        String(
+          camera.label ||
+          ''
+        ).toLowerCase();
+
+
+      if (
+        !rearCamera &&
+        (
+          label.includes(
+            'back'
+          ) ||
+          label.includes(
+            'rear'
+          ) ||
+          label.includes(
+            'environment'
+          ) ||
+          label.includes(
+            'world'
+          )
+        )
+      ) {
+
+        rearCamera =
+          camera;
+
+      }
+
+    }
+  );
+
+
+  if (
+    !selectedCameraId
+  ) {
+
+    selectedCameraId =
+      rearCamera
+        ? rearCamera.id
+        : availableCameras[0].id;
+
+  }
+
+
+  availableCameras.forEach(
+    function(camera, index) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+
+      option.value =
+        camera.id;
+
+
+      option.textContent =
+        camera.label ||
+        (
+          'Camera ' +
+          (index + 1)
+        );
+
+
+      if (
+        camera.id ===
+        selectedCameraId
+      ) {
+
+        option.selected =
+          true;
+
+      }
+
+
+      cameraSelect.appendChild(
+        option
+      );
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   START CAMERA
+===================================================== */
+
+async function startCamera() {
+
+  if (
+    startingCamera
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    scannerRunning
+  ) {
+
+    return;
+
+  }
+
+
+  startingCamera =
+    true;
+
+
+  startButton.disabled =
+    true;
+
+
+  setStatus(
+    'Requesting camera permission...',
+    ''
+  );
+
+
+  try {
+
+    checkCameraSupport();
 
 
     /*
-     * First request camera permission.
+     * =================================================
+     * FIRST CAMERA PERMISSION
+     * =================================================
      *
-     * This is important for mobile browsers.
+     * Requesting permission here is deliberate.
+     *
+     * This function is called from the START CAMERA
+     * button, so the request is user initiated.
      */
 
-    const permissionStream =
-      await navigator.mediaDevices.getUserMedia(
-        {
-          video:true,
-          audio:false
-        }
+    let stream =
+      null;
+
+
+    try {
+
+      stream =
+        await navigator.mediaDevices.getUserMedia({
+
+          video:
+            true,
+
+          audio:
+            false
+
+        });
+
+    }
+    catch (permissionError) {
+
+      console.error(
+        '[E-SAFE CAMERA PERMISSION ERROR]',
+        permissionError
       );
 
 
-    permissionStream
-      .getTracks()
-      .forEach(
-        function(track){
+      throw permissionError;
 
-          track.stop();
+    }
+    finally {
 
-        }
-      );
+      if (stream) {
+
+        stream
+          .getTracks()
+          .forEach(
+            function(track) {
+
+              track.stop();
+
+            }
+          );
+
+      }
+
+    }
 
 
-    const cameras =
-      await getCameras();
+    /*
+     * =================================================
+     * GET CAMERAS AFTER PERMISSION
+     * =================================================
+     */
+
+    await refreshCameras();
 
 
-    if(
-      !cameras ||
-      cameras.length === 0
-    ){
+    if (
+      availableCameras.length === 0
+    ) {
 
       throw new Error(
-        'No camera available.'
+        'No camera was detected on this device.'
       );
 
     }
 
 
-    const selectedCameraId =
-      cameraSelect.value ||
-      cameras[0].id;
+    /*
+     * Select rear camera again after permission.
+     */
+
+    if (
+      !selectedCameraId
+    ) {
+
+      selectedCameraId =
+        availableCameras[0].id;
+
+    }
 
 
-    console.log(
-      '[E-SAFE SELECTED CAMERA]',
-      selectedCameraId
-    );
+    /*
+     * =================================================
+     * CREATE QR SCANNER
+     * =================================================
+     */
 
-
-    html5QrCode =
+    scanner =
       new Html5Qrcode(
-        'reader'
+        'reader',
+        {
+          verbose:
+            false
+        }
       );
 
 
-    await html5QrCode.start(
+    /*
+     * =================================================
+     * SCANNER CONFIG
+     * =================================================
+     *
+     * We deliberately do NOT use:
+     *
+     * facingMode
+     * aspectRatio
+     * custom MediaStream constraints
+     *
+     * We give html5-qrcode the actual camera ID.
+     */
 
-      selectedCameraId,
+    const config = {
 
-      {
-        fps:10,
+      fps:
+        10,
 
-        qrbox:function(
+      qrbox:
+        function(
           viewfinderWidth,
           viewfinderHeight
-        ){
+        ) {
 
           const size =
             Math.floor(
               Math.min(
                 viewfinderWidth,
                 viewfinderHeight
-              ) * 0.65
+              ) *
+              0.62
             );
 
+
           return {
-            width:size,
-            height:size
+
+            width:
+              Math.max(
+                180,
+                Math.min(
+                  size,
+                  360
+                )
+              ),
+
+            height:
+              Math.max(
+                180,
+                Math.min(
+                  size,
+                  360
+                )
+              )
+
           };
 
         },
 
-        aspectRatio:1.0,
+      aspectRatio:
+        1.0,
 
-        disableFlip:false
+      disableFlip:
+        false
 
-      },
+    };
+
+
+    /*
+     * =================================================
+     * START
+     * =================================================
+     */
+
+    await scanner.start(
+
+      selectedCameraId,
+
+      config,
 
       handleQRScan,
 
@@ -1504,25 +2131,26 @@ async function startCamera(){
       true;
 
 
-    stopBtn.disabled =
+    startingCamera =
       false;
 
 
-    startBtn.disabled =
+    startButton.disabled =
       true;
 
 
-    setConnectionStatus(
-      'CAMERA: READY'
-    );
+    stopButton.disabled =
+      false;
 
 
-    console.log(
-      '[E-SAFE CAMERA] Started successfully.'
+    setStatus(
+      attendanceMode +
+      ' scanner ready. Scan a QR code.',
+      'success'
     );
 
   }
-  catch(error){
+  catch (error) {
 
     console.error(
       '[E-SAFE CAMERA ERROR]',
@@ -1530,31 +2158,27 @@ async function startCamera(){
     );
 
 
+    startingCamera =
+      false;
+
+
     scannerRunning =
       false;
 
 
-    startBtn.disabled =
+    startButton.disabled =
       false;
 
 
-    stopBtn.disabled =
+    stopButton.disabled =
       true;
 
 
-    setConnectionStatus(
-      'CAMERA: ERROR'
-    );
-
-
-    alert(
-      'Unable to start the camera.\n\n' +
-      (
-        error &&
-        error.message
-          ? error.message
-          : error
-      )
+    setStatus(
+      getCameraErrorMessage(
+        error
+      ),
+      'error'
     );
 
 
@@ -1565,173 +2189,177 @@ async function startCamera(){
 }
 
 
-/* ==========================================================
-   STOP CAMERA
-========================================================== */
+/* =====================================================
+   CAMERA ERROR
+===================================================== */
 
-async function stopCamera(){
+function getCameraErrorMessage(
+  error
+) {
 
-  if(
-    !html5QrCode ||
-    !scannerRunning
-  ){
+  if (!error) {
 
-    return;
-
-  }
-
-
-  try{
-
-    await html5QrCode.stop();
-
-  }
-  catch(error){
-
-    console.warn(
-      '[E-SAFE CAMERA STOP WARNING]',
-      error
-    );
+    return 'Unable to start camera.';
 
   }
 
 
-  scannerRunning =
-    false;
-
-
-  startBtn.disabled =
-    false;
-
-
-  stopBtn.disabled =
-    true;
-
-
-  setConnectionStatus(
-    'CAMERA: STOPPED'
-  );
-
-}
-
-
-/* ==========================================================
-   DESTROY SCANNER
-========================================================== */
-
-async function destroyScanner(){
-
-  if(!html5QrCode){
-
-    return;
-
-  }
-
-
-  try{
-
-    if(scannerRunning){
-
-      await html5QrCode.stop();
-
-    }
-
-  }
-  catch(error){
-
-    console.warn(
-      '[E-SAFE DESTROY STOP WARNING]',
-      error
-    );
-
-  }
-
-
-  try{
-
-    await html5QrCode.clear();
-
-  }
-  catch(error){
-
-    console.warn(
-      '[E-SAFE DESTROY CLEAR WARNING]',
-      error
-    );
-
-  }
-
-
-  html5QrCode =
-    null;
-
-  scannerRunning =
-    false;
-
-}
-
-
-/* ==========================================================
-   QR SCAN CALLBACK
-========================================================== */
-
-function handleQRScan(
-  decodedText,
-  decodedResult
-){
-
-  if(scanLocked){
-
-    return;
-
-  }
-
-
-  let token =
+  const name =
     String(
-      decodedText || ''
-    ).trim().toUpperCase();
-
-
-  console.log(
-    '[E-SAFE RAW QR VALUE]',
-    JSON.stringify(
-      decodedText
-    )
-  );
-
-
-  /*
-   * Some QR readers may return quotes.
-   */
-
-  token =
-    token.replace(
-      /^["']|["']$/g,
+      error.name ||
       ''
     );
 
 
-  if(!token){
+  const message =
+    String(
+      error.message ||
+      error
+    );
+
+
+  if (
+    name ===
+    'NotAllowedError'
+  ) {
+
+    return (
+      'Camera permission was denied. ' +
+      'Allow camera access in your browser settings ' +
+      'and try again.'
+    );
+
+  }
+
+
+  if (
+    name ===
+    'NotFoundError'
+  ) {
+
+    return (
+      'No camera was found on this device.'
+    );
+
+  }
+
+
+  if (
+    name ===
+    'NotReadableError'
+  ) {
+
+    return (
+      'The camera is currently being used by another app. ' +
+      'Close other camera/scanner apps and try again.'
+    );
+
+  }
+
+
+  if (
+    name ===
+    'OverconstrainedError'
+  ) {
+
+    return (
+      'The selected camera cannot be started. ' +
+      'Choose another camera.'
+    );
+
+  }
+
+
+  if (
+    name ===
+    'SecurityError'
+  ) {
+
+    return (
+      'Camera access was blocked by browser security. ' +
+      'Make sure you opened the scanner using HTTPS.'
+    );
+
+  }
+
+
+  return (
+    'Camera error: ' +
+    message
+  );
+
+}
+
+
+/* =====================================================
+   CAMERA CHANGE
+===================================================== */
+
+async function changeCamera() {
+
+  const id =
+    cameraSelect.value;
+
+
+  if (!id) {
 
     return;
 
   }
 
 
-  /*
-   * Verify E-SAFE QR prefix.
-   */
+  selectedCameraId =
+    id;
 
-  if(
-    !token.startsWith(
-      QR_PREFIX
-    )
-  ){
 
-    console.warn(
-      '[E-SAFE INVALID QR]',
-      token
+  if (
+    scannerRunning
+  ) {
+
+    await stopCamera();
+
+
+    await new Promise(
+      function(resolve) {
+
+        setTimeout(
+          resolve,
+          250
+        );
+
+      }
+    );
+
+
+    await startCamera();
+
+  }
+
+}
+
+
+/* =====================================================
+   STOP CAMERA
+===================================================== */
+
+async function stopCamera() {
+
+  if (
+    !scanner
+  ) {
+
+    scannerRunning =
+      false;
+
+    startButton.disabled =
+      false;
+
+    stopButton.disabled =
+      true;
+
+    setStatus(
+      'Camera is stopped.',
+      ''
     );
 
     return;
@@ -1739,41 +2367,185 @@ function handleQRScan(
   }
 
 
+  try {
+
+    await scanner.stop();
+
+  }
+  catch (error) {
+
+    console.log(
+      '[E-SAFE STOP ERROR]',
+      error
+    );
+
+  }
+
+
+  await destroyScanner();
+
+
+  scannerRunning =
+    false;
+
+
+  startButton.disabled =
+    false;
+
+
+  stopButton.disabled =
+    true;
+
+
+  setStatus(
+    'Camera is stopped.',
+    ''
+  );
+
+}
+
+
+/* =====================================================
+   DESTROY SCANNER
+===================================================== */
+
+async function destroyScanner() {
+
+  if (!scanner) {
+
+    return;
+
+  }
+
+
+  try {
+
+    if (
+      scannerRunning
+    ) {
+
+      await scanner.stop();
+
+    }
+
+  }
+  catch (error) {
+
+    console.log(
+      '[E-SAFE DESTROY STOP]',
+      error
+    );
+
+  }
+
+
+  try {
+
+    await scanner.clear();
+
+  }
+  catch (error) {
+
+    console.log(
+      '[E-SAFE DESTROY CLEAR]',
+      error
+    );
+
+  }
+
+
+  scanner =
+    null;
+
+
+  scannerRunning =
+    false;
+
+
+  document.getElementById(
+    'reader'
+  ).innerHTML =
+    '';
+
+}
+
+
+/* =====================================================
+   QR SCAN SUCCESS
+===================================================== */
+
+function handleQRScan(
+  decodedText,
+  decodedResult
+) {
+
+  if (
+    scanLocked
+  ) {
+
+    return;
+
+  }
+
+
+  const token =
+    String(
+      decodedText ||
+      ''
+    )
+    .trim()
+    .toUpperCase();
+
+
+  if (!token) {
+
+    return;
+
+  }
+
+
   /*
-   * CLIENT-SIDE PROTECTION
-   *
-   * This prevents html5-qrcode from
-   * firing the same scan repeatedly.
-   *
-   * Server-side protection remains
-   * authoritative.
+   * QR prefix protection.
+   */
+
+  if (
+    !token.startsWith(
+      'ESAFE-'
+    )
+  ) {
+
+    setStatus(
+      'This is not a valid E-SAFE QR code.',
+      'error'
+    );
+
+
+    return;
+
+  }
+
+
+  /*
+   * Prevent the same QR from being submitted
+   * repeatedly by the camera before the backend
+   * responds.
    */
 
   const now =
     Date.now();
 
 
-  if(
-    token === lastScannedToken &&
-    now - lastScanTime <
-      CLIENT_COOLDOWN_MS
-  ){
-
-    console.log(
-      '[E-SAFE CLIENT DUPLICATE BLOCK]'
-    );
+  if (
+    token ===
+      lastScannedToken &&
+    now -
+      lastScanTime <
+      3000
+  ) {
 
     return;
 
   }
-
-
-  /*
-   * Lock immediately.
-   */
-
-  scanLocked =
-    true;
 
 
   lastScannedToken =
@@ -1784,9 +2556,19 @@ function handleQRScan(
     now;
 
 
+  scanLocked =
+    true;
+
+
   console.log(
-    '[E-SAFE QR ACCEPTED]',
+    '[E-SAFE QR]',
     token
+  );
+
+
+  setStatus(
+    'QR detected. Checking student...',
+    'warning'
   );
 
 
@@ -1797,452 +2579,707 @@ function handleQRScan(
 }
 
 
-/* ==========================================================
+/* =====================================================
    QR SCAN ERROR
-========================================================== */
+===================================================== */
 
 function handleQRScanError(
   errorMessage
-){
+) {
 
   /*
-   * html5-qrcode generates many
-   * "QR code not found" messages.
+   * html5-qrcode continuously reports
+   * "QR code not found" while searching.
    *
-   * Do not log them continuously.
+   * Do not display that as an error.
    */
 
 }
 
 
-/* ==========================================================
+/* =====================================================
+   API JSONP
+===================================================== */
+
+function callScannerAPI(
+  action,
+  params
+) {
+
+  return new Promise(
+    function(resolve, reject) {
+
+      const callbackName =
+        '__esafeCallback_' +
+        Date.now() +
+        '_' +
+        Math.floor(
+          Math.random() *
+          100000
+        );
+
+
+      const script =
+        document.createElement(
+          'script'
+        );
+
+
+      const query =
+        new URLSearchParams();
+
+
+      query.set(
+        'action',
+        action
+      );
+
+
+      query.set(
+        'apiKey',
+        API_KEY
+      );
+
+
+      query.set(
+        'callback',
+        callbackName
+      );
+
+
+      Object.keys(
+        params || {}
+      )
+      .forEach(
+        function(key) {
+
+          query.set(
+            key,
+            params[key]
+          );
+
+        }
+      );
+
+
+      let finished =
+        false;
+
+
+      const cleanup =
+        function() {
+
+          try {
+
+            delete window[
+              callbackName
+            ];
+
+          }
+          catch (error) {
+
+            window[
+              callbackName
+            ] =
+              undefined;
+
+          }
+
+
+          if (
+            script.parentNode
+          ) {
+
+            script.parentNode.removeChild(
+              script
+            );
+
+          }
+
+        };
+
+
+      const timeout =
+        setTimeout(
+          function() {
+
+            if (
+              finished
+            ) {
+
+              return;
+
+            }
+
+
+            finished =
+              true;
+
+
+            cleanup();
+
+
+            reject(
+              new Error(
+                'Unable to connect to E-SAFE API.'
+              )
+            );
+
+          },
+          15000
+        );
+
+
+      window[
+        callbackName
+      ] =
+        function(data) {
+
+          if (
+            finished
+          ) {
+
+            return;
+
+          }
+
+
+          finished =
+            true;
+
+
+          clearTimeout(
+            timeout
+          );
+
+
+          cleanup();
+
+
+          resolve(
+            data
+          );
+
+        };
+
+
+      script.onerror =
+        function() {
+
+          if (
+            finished
+          ) {
+
+            return;
+
+          }
+
+
+          finished =
+            true;
+
+
+          clearTimeout(
+            timeout
+          );
+
+
+          cleanup();
+
+
+          reject(
+            new Error(
+              'Unable to connect to E-SAFE API.'
+            )
+          );
+
+        };
+
+
+      script.src =
+        API_URL +
+        (
+          API_URL.includes('?')
+            ? '&'
+            : '?'
+        ) +
+        query.toString();
+
+
+      document
+        .head
+        .appendChild(
+          script
+        );
+
+    }
+  );
+
+}
+
+
+/* =====================================================
    RECORD ATTENDANCE
-========================================================== */
+===================================================== */
 
-function recordAttendanceFromScanner(
-  token
-){
-
-  const type =
-    String(
-      attendanceType.value ||
-      'ENTRY'
-    ).toUpperCase();
-
+async function recordAttendanceFromScanner(
+  qrToken
+) {
 
   showLoading(
-    true,
-    'Checking E-SAFE record...'
+    true
   );
 
 
-  /*
-   * IMPORTANT:
-   *
-   * This is JSONP.
-   *
-   * There is NO google.script.run here.
-   */
+  try {
 
-  jsonpRequest(
+    const result =
+      await callScannerAPI(
+        'scan',
+        {
 
-    {
-      api:'scanner',
+          qrToken:
+            qrToken,
 
-      action:'scan',
+          type:
+            attendanceMode,
 
-      apiKey:API_KEY,
+          scanner:
+            SCANNER_NAME
 
-      qr:token,
-
-      qrToken:token,
-
-      token:token,
-
-      type:type,
-
-      scanner:SCANNER_NAME
-
-    },
-
-    function(response){
-
-      console.log(
-        '[E-SAFE SCAN RESPONSE]',
-        response
+        }
       );
 
 
-      showLoading(
-        false
-      );
+    showLoading(
+      false
+    );
 
 
-      if(
-        !response
-      ){
+    if (
+      !result ||
+      result.success !== true
+    ) {
 
-        showErrorResult(
-          'Empty response received from E-SAFE API.'
-        );
-
-        return;
-
-      }
-
-
-      /*
-       * =====================================================
-       * SUCCESS
-       * =====================================================
-       */
-
-      if(
-        response.success === true
-      ){
-
-        showSuccessResult(
-          response
-        );
-
-        return;
-
-      }
-
-
-      /*
-       * =====================================================
-       * DUPLICATE
-       * =====================================================
-       */
-
-      if(
-        response.duplicate === true
-      ){
+      if (
+        result &&
+        result.duplicate
+      ) {
 
         showDuplicateResult(
-          response
+          result
         );
 
-        return;
+      }
+      else {
+
+        showErrorResult(
+          result &&
+          (
+            result.message ||
+            result.error
+          )
+            ? (
+                result.message ||
+                result.error
+              )
+            : 'Unable to record attendance.'
+        );
 
       }
 
 
-      /*
-       * =====================================================
-       * NORMAL API ERROR
-       * =====================================================
-       */
-
-      showErrorResult(
-
-        response.message ||
-        response.error ||
-        'E-SAFE rejected the scan.'
-
-      );
-
-    },
-
-    function(error){
-
-      console.error(
-        '[E-SAFE SCAN CONNECTION ERROR]',
-        error
-      );
-
-
-      showLoading(
-        false
-      );
-
-
-      /*
-       * Show the REAL error.
-       *
-       * This makes debugging much easier.
-       */
-
-      showErrorResult(
-
-        'Unable to connect to E-SAFE API.\n\n' +
-        (
-          error &&
-          error.message
-            ? error.message
-            : String(error)
-        )
-
-      );
+      return;
 
     }
 
-  );
 
-}
+    showSuccessResult(
+      result
+    );
 
+  }
+  catch (error) {
 
-/* ==========================================================
-   SUCCESS RESULT
-========================================================== */
-
-function showSuccessResult(
-  response
-){
-
-  resultIcon.textContent =
-    '✓';
-
-  resultIcon.style.background =
-    '#078a35';
+    showLoading(
+      false
+    );
 
 
-  resultTitle.textContent =
-    'ENTRY RECORDED';
+    console.error(
+      '[E-SAFE SCAN ERROR]',
+      error
+    );
 
 
-  if(
-    response.attendance &&
-    response.attendance.type === 'EXIT'
-  ){
-
-    resultTitle.textContent =
-      'EXIT RECORDED';
+    showErrorResult(
+      error.message ||
+      String(error)
+    );
 
   }
 
-
-  resultMessage.textContent =
-    response.message ||
-    'Attendance recorded successfully.';
-
-
-  populateStudentInfo(
-    response
-  );
-
-
-  resultModal.style.display =
-    'flex';
-
 }
 
 
-/* ==========================================================
-   DUPLICATE RESULT
-========================================================== */
+/* =====================================================
+   SUCCESS RESULT
+===================================================== */
 
-function showDuplicateResult(
-  response
-){
-
-  resultIcon.textContent =
-    '!';
-
-  resultIcon.style.background =
-    '#d99000';
-
-
-  resultTitle.textContent =
-    'DUPLICATE BLOCKED';
-
-
-  resultMessage.textContent =
-    response.message ||
-    'This attendance scan was already recorded recently.';
-
-
-  populateStudentInfo(
-    response
-  );
-
-
-  resultModal.style.display =
-    'flex';
-
-}
-
-
-/* ==========================================================
-   ERROR RESULT
-========================================================== */
-
-function showErrorResult(
-  message
-){
-
-  resultIcon.textContent =
-    '×';
-
-  resultIcon.style.background =
-    '#b40000';
-
-
-  resultTitle.textContent =
-    'SCAN ERROR';
-
-
-  resultMessage.textContent =
-    message;
-
-
-  studentInfo.style.display =
-    'none';
-
-
-  resultModal.style.display =
-    'flex';
-
-}
-
-
-/* ==========================================================
-   POPULATE STUDENT INFO
-========================================================== */
-
-function populateStudentInfo(
-  response
-){
+function showSuccessResult(
+  result
+) {
 
   const student =
-    response.student ||
+    result.student ||
     {};
+
+
+  document
+    .getElementById(
+      'resultHeader'
+    )
+    .className =
+      'result-header';
+
+
+  document
+    .getElementById(
+      'resultIcon'
+    )
+    .textContent =
+      '✓';
+
+
+  document
+    .getElementById(
+      'resultTitle'
+    )
+    .textContent =
+      (
+        result.attendance &&
+        result.attendance.type
+          ? result.attendance.type
+          : attendanceMode
+      ) +
+      ' RECORDED';
+
+
+  fillStudentResult(
+    student
+  );
 
 
   const attendance =
-    response.attendance ||
+    result.attendance ||
     {};
 
 
-  const previous =
-    response.previousAttendance ||
-    {};
+  document
+    .getElementById(
+      'resultTime'
+    )
+    .textContent =
+      (
+        attendance.time ||
+        new Date().toLocaleTimeString()
+      ) +
+      ' • ' +
+      (
+        attendance.date ||
+        ''
+      );
 
 
-  const name =
-    student.name ||
-    student.studentName ||
-    student.STUDENT_NAME ||
-    '';
+  document
+    .getElementById(
+      'resultOverlay'
+    )
+    .classList
+    .add(
+      'show'
+    );
 
 
-  const lrn =
-    student.lrn ||
-    student.LRN ||
-    '';
-
-
-  const grade =
-    student.grade ||
-    student.GRADE ||
-    '';
-
-
-  const section =
-    student.section ||
-    student.SECTION ||
-    '';
-
-
-  const type =
-    attendance.type ||
-    previous.type ||
-    attendanceType.value ||
-    '';
-
-
-  const time =
-    attendance.time ||
-    previous.time ||
-    '';
-
-
-  document.getElementById(
-    'studentName'
-  ).textContent =
-    name;
-
-
-  document.getElementById(
-    'studentLRN'
-  ).textContent =
-    lrn;
-
-
-  document.getElementById(
-    'studentGrade'
-  ).textContent =
-    grade;
-
-
-  document.getElementById(
-    'studentSection'
-  ).textContent =
-    section;
-
-
-  document.getElementById(
-    'attendanceResultType'
-  ).textContent =
-    type;
-
-
-  document.getElementById(
-    'attendanceResultTime'
-  ).textContent =
-    time;
-
-
-  studentInfo.style.display =
-    'block';
+  setStatus(
+    'Attendance recorded successfully.',
+    'success'
+  );
 
 }
 
 
-/* ==========================================================
-   LOADING
-========================================================== */
+/* =====================================================
+   DUPLICATE RESULT
+===================================================== */
 
-function showLoading(
-  visible,
+function showDuplicateResult(
+  result
+) {
+
+  document
+    .getElementById(
+      'resultHeader'
+    )
+    .className =
+      'result-header error';
+
+
+  document
+    .getElementById(
+      'resultIcon'
+    )
+    .textContent =
+      '⚠';
+
+
+  document
+    .getElementById(
+      'resultTitle'
+    )
+    .textContent =
+      'DUPLICATE SCAN';
+
+
+  fillStudentResult(
+    result.student ||
+    {}
+  );
+
+
+  document
+    .getElementById(
+      'resultTime'
+    )
+    .textContent =
+      result.message ||
+      'Please wait before scanning this QR again.';
+
+
+  document
+    .getElementById(
+      'resultOverlay'
+    )
+    .classList
+    .add(
+      'show'
+    );
+
+
+  setStatus(
+    'Duplicate scan ignored.',
+    'warning'
+  );
+
+}
+
+
+/* =====================================================
+   ERROR RESULT
+===================================================== */
+
+function showErrorResult(
   message
-){
+) {
 
-  loading.style.display =
-    visible
-      ? 'flex'
-      : 'none';
+  document
+    .getElementById(
+      'resultHeader'
+    )
+    .className =
+      'result-header error';
 
 
-  if(message){
+  document
+    .getElementById(
+      'resultIcon'
+    )
+    .textContent =
+      '×';
 
-    loadingText.textContent =
+
+  document
+    .getElementById(
+      'resultTitle'
+    )
+    .textContent =
+      'SCAN ERROR';
+
+
+  document
+    .getElementById(
+      'studentName'
+    )
+    .textContent =
       message;
+
+
+  document
+    .getElementById(
+      'studentPhoto'
+    )
+    .style
+    .display =
+      'none';
+
+
+  document
+    .getElementById(
+      'studentLRN'
+    )
+    .textContent =
+      '';
+
+
+  document
+    .getElementById(
+      'studentGrade'
+    )
+    .textContent =
+      '';
+
+
+  document
+    .getElementById(
+      'studentSection'
+    )
+    .textContent =
+      '';
+
+
+  document
+    .getElementById(
+      'studentStatus'
+    )
+    .textContent =
+      '';
+
+
+  document
+    .getElementById(
+      'resultTime'
+    )
+    .textContent =
+      '';
+
+
+  document
+    .getElementById(
+      'resultOverlay'
+    )
+    .classList
+    .add(
+      'show'
+    );
+
+
+  setStatus(
+    message,
+    'error'
+  );
+
+}
+
+
+/* =====================================================
+   FILL STUDENT
+===================================================== */
+
+function fillStudentResult(
+  student
+) {
+
+  document
+    .getElementById(
+      'studentName'
+    )
+    .textContent =
+      student.name ||
+      'Student';
+
+
+  document
+    .getElementById(
+      'studentLRN'
+    )
+    .textContent =
+      student.lrn ||
+      '—';
+
+
+  document
+    .getElementById(
+      'studentGrade'
+    )
+    .textContent =
+      student.grade ||
+      '—';
+
+
+  document
+    .getElementById(
+      'studentSection'
+    )
+    .textContent =
+      student.section ||
+      '—';
+
+
+  document
+    .getElementById(
+      'studentStatus'
+    )
+    .textContent =
+      student.status ||
+      'ACTIVE';
+
+
+  const photo =
+    document.getElementById(
+      'studentPhoto'
+    );
+
+
+  if (
+    student.photoUrl
+  ) {
+
+    photo.src =
+      student.photoUrl;
+
+    photo.style.display =
+      'block';
+
+  }
+  else {
+
+    photo.removeAttribute(
+      'src'
+    );
+
+    photo.style.display =
+      'none';
 
   }
 
 }
 
 
-/* ==========================================================
+/* =====================================================
    CLOSE RESULT
-========================================================== */
+===================================================== */
 
-function closeResult(){
+async function closeResult() {
 
-  resultModal.style.display =
-    'none';
+  document
+    .getElementById(
+      'resultOverlay'
+    )
+    .classList
+    .remove(
+      'show'
+    );
 
-
-  studentInfo.style.display =
-    'none';
-
-
-  /*
-   * Unlock scanning only after
-   * user explicitly presses SCAN NEXT.
-   */
 
   scanLocked =
     false;
@@ -2256,102 +3293,90 @@ function closeResult(){
     0;
 
 
-  if(scannerRunning){
-
-    setConnectionStatus(
-      'CAMERA: READY'
-    );
-
-  }
-
-}
-
-
-/* ==========================================================
-   CLOSE SCANNER
-========================================================== */
-
-async function closeScanner(){
-
-  await stopCamera();
-
-  await destroyScanner();
+  setStatus(
+    attendanceMode +
+    ' scanner ready. Scan the next student.',
+    'success'
+  );
 
 
   /*
-   * GitHub Pages normally cannot be
-   * closed by script unless opened by
-   * script, so fall back to history.
+   * Keep camera running.
    */
-
-  try{
-
-    window.close();
-
-  }
-  catch(e){}
-
-
-  setTimeout(
-    function(){
-
-      if(
-        window.history.length > 1
-      ){
-
-        window.history.back();
-
-      }
-
-    },
-    100
-  );
 
 }
 
 
-/* ==========================================================
-   CAMERA CHANGE
-========================================================== */
+/* =====================================================
+   LOADING
+===================================================== */
 
-cameraSelect.addEventListener(
-  'change',
-  async function(){
+function showLoading(
+  show
+) {
 
-    if(!scannerRunning){
+  document
+    .getElementById(
+      'loading'
+    )
+    .classList
+    .toggle(
+      'show',
+      !!show
+    );
 
-      return;
-
-    }
+}
 
 
-    await stopCamera();
+/* =====================================================
+   CLOSE SCANNER
+===================================================== */
 
-    await destroyScanner();
+async function closeScanner() {
 
-    await startCamera();
+  await stopCamera();
+
+
+  /*
+   * If scanner was opened from the E-SAFE portal,
+   * return to the previous page.
+   */
+
+  if (
+    window.history.length > 1
+  ) {
+
+    window.history.back();
+
+    return;
 
   }
-);
 
 
-/* ==========================================================
-   PAGE VISIBILITY
-========================================================== */
+  /*
+   * Fallback.
+   */
+
+  window.location.href =
+    'about:blank';
+
+}
+
+
+/* =====================================================
+   VISIBILITY CHANGE
+===================================================== */
 
 document.addEventListener(
   'visibilitychange',
-  async function(){
+  async function() {
 
-    if(
-      document.hidden
-    ){
+    if (
+      document.hidden &&
+      scannerRunning
+    ) {
 
-      if(scannerRunning){
-
-        await stopCamera();
-
-      }
+      await stopCamera();
 
     }
 
@@ -2359,24 +3384,26 @@ document.addEventListener(
 );
 
 
-/* ==========================================================
-   BEFORE UNLOAD
-========================================================== */
+/* =====================================================
+   PAGE EXIT
+===================================================== */
 
 window.addEventListener(
   'beforeunload',
-  function(){
+  function() {
 
-    if(
-      html5QrCode &&
-      scannerRunning
-    ){
+    if (
+      scanner
+    ) {
 
-      html5QrCode
-        .stop()
-        .catch(
-          function(){}
-        );
+      try {
+
+        scanner.stop();
+
+      }
+      catch (error) {
+
+      }
 
     }
 
