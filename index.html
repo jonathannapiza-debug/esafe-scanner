@@ -72,6 +72,13 @@ body {
 }
 
 
+body {
+
+  overscroll-behavior: none;
+
+}
+
+
 /* =====================================================
    APP
 ===================================================== */
@@ -85,10 +92,11 @@ body {
   width: 100vw;
   height: 100dvh;
 
+  min-height: 100dvh;
+
   overflow: hidden;
 
-  background:
-    #050505;
+  background: #050505;
 
 }
 
@@ -110,12 +118,10 @@ body {
   height: 70px;
 
   padding:
-    env(safe-area-inset-top)
+    max(env(safe-area-inset-top), 8px)
     14px
     8px
     14px;
-
-  min-height: 70px;
 
   display: flex;
 
@@ -150,6 +156,8 @@ body {
 
   width: 42px;
   height: 42px;
+
+  flex: 0 0 42px;
 
   border-radius: 12px;
 
@@ -206,6 +214,8 @@ body {
   width: 42px;
   height: 42px;
 
+  flex: 0 0 42px;
+
   border: 0;
 
   border-radius: 50%;
@@ -239,9 +249,9 @@ body {
 }
 
 
-/*
- * html5-qrcode container
- */
+/* =====================================================
+   HTML5 QR CODE
+===================================================== */
 
 #reader {
 
@@ -252,6 +262,9 @@ body {
   width: 100% !important;
   height: 100% !important;
 
+  min-width: 100% !important;
+  min-height: 100% !important;
+
   border: 0 !important;
 
   overflow: hidden !important;
@@ -261,9 +274,16 @@ body {
 
 #reader video {
 
+  position: absolute !important;
+
+  inset: 0 !important;
+
   width: 100% !important;
 
   height: 100% !important;
+
+  min-width: 100% !important;
+  min-height: 100% !important;
 
   object-fit: cover !important;
 
@@ -280,14 +300,42 @@ body {
 #reader__scan_region {
 
   width: 100% !important;
+
   height: 100% !important;
 
   border: 0 !important;
+
+  overflow: hidden !important;
+
+}
+
+
+#reader__scan_region video {
+
+  width: 100% !important;
+
+  height: 100% !important;
+
+  object-fit: cover !important;
 
 }
 
 
 #reader__dashboard {
+
+  display: none !important;
+
+}
+
+
+#reader__dashboard_section {
+
+  display: none !important;
+
+}
+
+
+#reader__dashboard_section_csr {
 
   display: none !important;
 
@@ -492,7 +540,11 @@ body {
 
   left: 50%;
 
-  top: 82px;
+  top:
+    calc(
+      max(env(safe-area-inset-top), 8px)
+      + 68px
+    );
 
   transform:
     translateX(-50%);
@@ -552,10 +604,11 @@ body {
 
   z-index: 30;
 
-  top: calc(
-    50% +
-    min(39vw, 180px)
-  );
+  top:
+    calc(
+      50% +
+      min(39vw, 180px)
+    );
 
   left: 50%;
 
@@ -877,6 +930,8 @@ body {
 
   color: #222;
 
+  overflow-wrap: anywhere;
+
 }
 
 
@@ -1056,8 +1111,7 @@ body {
    MOBILE
 ===================================================== */
 
-@media
-(max-width: 600px) {
+@media (max-width: 600px) {
 
   .header {
 
@@ -1068,7 +1122,11 @@ body {
 
   .mode-panel {
 
-    top: 76px;
+    top:
+      calc(
+        max(env(safe-area-inset-top), 6px)
+        + 68px
+      );
 
   }
 
@@ -1084,6 +1142,68 @@ body {
 
     width:
       min(80vw, 330px);
+
+  }
+
+}
+
+
+/* =====================================================
+   SMALL HEIGHT
+===================================================== */
+
+@media
+(max-height: 700px)
+and
+(orientation: portrait) {
+
+  .scan-frame {
+
+    width:
+      min(68vw, 280px);
+
+  }
+
+
+  .instruction {
+
+    top:
+      calc(
+        50% +
+        min(34vw, 145px)
+      );
+
+  }
+
+
+  .bottom-panel {
+
+    padding-top: 6px;
+
+  }
+
+
+  .status {
+
+    margin-bottom: 5px;
+
+    padding: 7px 10px;
+
+  }
+
+
+  .control-button {
+
+    min-height: 42px;
+
+  }
+
+
+  .camera-select {
+
+    height: 38px;
+
+    margin-top: 5px;
 
   }
 
@@ -1454,24 +1574,20 @@ and
 
 
 /*
- * IMPORTANT:
+ * PROJECT E-SAFE
  *
- * Replace this with your deployed Apps Script
- * Web App /exec URL.
+ * STANDALONE GITHUB PAGES SCANNER
  *
- * Example:
+ * DO NOT USE google.script.run HERE.
  *
- * https://script.google.com/macros/s/XXXXXXXXXXXX/exec
+ * Communication with Apps Script is done through
+ * JSONP so that the GitHub Pages HTTPS frontend
+ * does not depend on CORS.
  */
 
 const API_URL =
   'https://script.google.com/macros/s/AKfycbwRW7wHP_Y6ZkZXdiDP8OrIqkV2e2f94pyEmrErNId80O1ODMUyKwTyE1uHF3BNDgk/exec';
 
-
-/*
- * This must exactly match ESAFE_CONFIG.SCANNER_API_KEY
- * in Code.gs.
- */
 
 const API_KEY =
   'ESAFE-SCANNER-2026-AIS-501538';
@@ -1479,6 +1595,10 @@ const API_KEY =
 
 const SCANNER_NAME =
   'Standalone Mobile QR Scanner';
+
+
+const API_TIMEOUT =
+  20000;
 
 
 /* =====================================================
@@ -1540,27 +1660,11 @@ document.addEventListener(
   'DOMContentLoaded',
   function() {
 
-    /*
-     * Do not request camera permission
-     * automatically on page load.
-     *
-     * Mobile browsers behave more reliably
-     * when getUserMedia() is triggered by
-     * a user action.
-     */
-
     setStatus(
       'Tap START CAMERA to begin.',
       ''
     );
 
-
-    /*
-     * Try to enumerate cameras.
-     *
-     * Some mobile browsers may return empty
-     * labels before permission is granted.
-     */
 
     refreshCameras();
 
@@ -1669,7 +1773,7 @@ function checkCameraSupport() {
   ) {
 
     throw new Error(
-      'Camera requires HTTPS. Open the scanner using the HTTPS website URL.'
+      'Camera requires HTTPS. Open the scanner using the HTTPS GitHub Pages URL.'
     );
 
   }
@@ -1741,7 +1845,6 @@ async function refreshCameras() {
 
     populateCameraList();
 
-
   }
   catch (error) {
 
@@ -1810,18 +1913,10 @@ function populateCameraList() {
       if (
         !rearCamera &&
         (
-          label.includes(
-            'back'
-          ) ||
-          label.includes(
-            'rear'
-          ) ||
-          label.includes(
-            'environment'
-          ) ||
-          label.includes(
-            'world'
-          )
+          label.includes('back') ||
+          label.includes('rear') ||
+          label.includes('environment') ||
+          label.includes('world')
         )
       ) {
 
@@ -1895,15 +1990,7 @@ function populateCameraList() {
 async function startCamera() {
 
   if (
-    startingCamera
-  ) {
-
-    return;
-
-  }
-
-
-  if (
+    startingCamera ||
     scannerRunning
   ) {
 
@@ -1931,17 +2018,6 @@ async function startCamera() {
     checkCameraSupport();
 
 
-    /*
-     * =================================================
-     * FIRST CAMERA PERMISSION
-     * =================================================
-     *
-     * Requesting permission here is deliberate.
-     *
-     * This function is called from the START CAMERA
-     * button, so the request is user initiated.
-     */
-
     let stream =
       null;
 
@@ -1951,11 +2027,9 @@ async function startCamera() {
       stream =
         await navigator.mediaDevices.getUserMedia({
 
-          video:
-            true,
+          video: true,
 
-          audio:
-            false
+          audio: false
 
         });
 
@@ -1990,12 +2064,6 @@ async function startCamera() {
     }
 
 
-    /*
-     * =================================================
-     * GET CAMERAS AFTER PERMISSION
-     * =================================================
-     */
-
     await refreshCameras();
 
 
@@ -2010,10 +2078,6 @@ async function startCamera() {
     }
 
 
-    /*
-     * Select rear camera again after permission.
-     */
-
     if (
       !selectedCameraId
     ) {
@@ -2024,40 +2088,18 @@ async function startCamera() {
     }
 
 
-    /*
-     * =================================================
-     * CREATE QR SCANNER
-     * =================================================
-     */
-
     scanner =
       new Html5Qrcode(
         'reader',
         {
-          verbose:
-            false
+          verbose: false
         }
       );
 
 
-    /*
-     * =================================================
-     * SCANNER CONFIG
-     * =================================================
-     *
-     * We deliberately do NOT use:
-     *
-     * facingMode
-     * aspectRatio
-     * custom MediaStream constraints
-     *
-     * We give html5-qrcode the actual camera ID.
-     */
-
     const config = {
 
-      fps:
-        10,
+      fps: 10,
 
       qrbox:
         function(
@@ -2099,20 +2141,12 @@ async function startCamera() {
 
         },
 
-      aspectRatio:
-        1.0,
+      aspectRatio: 1.0,
 
-      disableFlip:
-        false
+      disableFlip: false
 
     };
 
-
-    /*
-     * =================================================
-     * START
-     * =================================================
-     */
 
     await scanner.start(
 
@@ -2219,22 +2253,19 @@ function getCameraErrorMessage(
 
 
   if (
-    name ===
-    'NotAllowedError'
+    name === 'NotAllowedError'
   ) {
 
     return (
       'Camera permission was denied. ' +
-      'Allow camera access in your browser settings ' +
-      'and try again.'
+      'Allow camera access in your browser settings and try again.'
     );
 
   }
 
 
   if (
-    name ===
-    'NotFoundError'
+    name === 'NotFoundError'
   ) {
 
     return (
@@ -2245,8 +2276,7 @@ function getCameraErrorMessage(
 
 
   if (
-    name ===
-    'NotReadableError'
+    name === 'NotReadableError'
   ) {
 
     return (
@@ -2258,21 +2288,18 @@ function getCameraErrorMessage(
 
 
   if (
-    name ===
-    'OverconstrainedError'
+    name === 'OverconstrainedError'
   ) {
 
     return (
-      'The selected camera cannot be started. ' +
-      'Choose another camera.'
+      'The selected camera cannot be started. Choose another camera.'
     );
 
   }
 
 
   if (
-    name ===
-    'SecurityError'
+    name === 'SecurityError'
   ) {
 
     return (
@@ -2324,7 +2351,7 @@ async function changeCamera() {
 
         setTimeout(
           resolve,
-          250
+          350
         );
 
       }
@@ -2344,9 +2371,7 @@ async function changeCamera() {
 
 async function stopCamera() {
 
-  if (
-    !scanner
-  ) {
+  if (!scanner) {
 
     scannerRunning =
       false;
@@ -2420,13 +2445,7 @@ async function destroyScanner() {
 
   try {
 
-    if (
-      scannerRunning
-    ) {
-
-      await scanner.stop();
-
-    }
+    await scanner.stop();
 
   }
   catch (error) {
@@ -2462,10 +2481,18 @@ async function destroyScanner() {
     false;
 
 
-  document.getElementById(
-    'reader'
-  ).innerHTML =
-    '';
+  const reader =
+    document.getElementById(
+      'reader'
+    );
+
+
+  if (reader) {
+
+    reader.innerHTML =
+      '';
+
+  }
 
 }
 
@@ -2504,10 +2531,6 @@ function handleQRScan(
   }
 
 
-  /*
-   * QR prefix protection.
-   */
-
   if (
     !token.startsWith(
       'ESAFE-'
@@ -2524,12 +2547,6 @@ function handleQRScan(
 
   }
 
-
-  /*
-   * Prevent the same QR from being submitted
-   * repeatedly by the camera before the backend
-   * responds.
-   */
 
   const now =
     Date.now();
@@ -2589,17 +2606,32 @@ function handleQRScanError(
 
   /*
    * html5-qrcode continuously reports
-   * "QR code not found" while searching.
+   * QR code not found.
    *
-   * Do not display that as an error.
+   * Intentionally ignored.
    */
 
 }
 
 
 /* =====================================================
-   API JSONP
+   JSONP API
 ===================================================== */
+
+/*
+ * IMPORTANT:
+ *
+ * GitHub Pages -> Apps Script is CROSS-ORIGIN.
+ *
+ * We intentionally DO NOT use fetch().
+ *
+ * We use JSONP through a <script> element.
+ *
+ * The Apps Script backend must return:
+ *
+ * callbackName({...});
+ *
+ */
 
 function callScannerAPI(
   action,
@@ -2610,12 +2642,12 @@ function callScannerAPI(
     function(resolve, reject) {
 
       const callbackName =
-        '__esafeCallback_' +
+        'esafeCallback_' +
         Date.now() +
         '_' +
         Math.floor(
           Math.random() *
-          100000
+          1000000
         );
 
 
@@ -2629,9 +2661,22 @@ function callScannerAPI(
         new URLSearchParams();
 
 
+      /*
+       * Explicitly identify this as
+       * the scanner API.
+       */
+
+      query.set(
+        'api',
+        'scanner'
+      );
+
+
       query.set(
         'action',
-        action
+        String(
+          action || ''
+        )
       );
 
 
@@ -2647,88 +2692,145 @@ function callScannerAPI(
       );
 
 
+      /*
+       * Add request parameters.
+       */
+
       Object.keys(
         params || {}
       )
       .forEach(
         function(key) {
 
-          query.set(
-            key,
-            params[key]
-          );
+          const value =
+            params[key];
+
+
+          if (
+            value !== undefined &&
+            value !== null
+          ) {
+
+            query.set(
+              key,
+              String(value)
+            );
+
+          }
 
         }
       );
+
+
+      /*
+       * Additional compatibility:
+       *
+       * Backend versions may expect either
+       * qrToken or qr.
+       */
+
+      if (
+        params &&
+        params.qrToken
+      ) {
+
+        query.set(
+          'qr',
+          String(
+            params.qrToken
+          )
+        );
+
+      }
 
 
       let finished =
         false;
 
 
-      const cleanup =
-        function() {
-
-          try {
-
-            delete window[
-              callbackName
-            ];
-
-          }
-          catch (error) {
-
-            window[
-              callbackName
-            ] =
-              undefined;
-
-          }
+      let timeoutId =
+        null;
 
 
-          if (
-            script.parentNode
-          ) {
+      function cleanup() {
 
-            script.parentNode.removeChild(
-              script
-            );
+        if (
+          timeoutId
+        ) {
 
-          }
+          clearTimeout(
+            timeoutId
+          );
 
-        };
+          timeoutId =
+            null;
 
-
-      const timeout =
-        setTimeout(
-          function() {
-
-            if (
-              finished
-            ) {
-
-              return;
-
-            }
+        }
 
 
-            finished =
-              true;
+        try {
+
+          delete window[
+            callbackName
+          ];
+
+        }
+        catch (error) {
+
+          window[
+            callbackName
+          ] =
+            undefined;
+
+        }
 
 
-            cleanup();
+        if (
+          script &&
+          script.parentNode
+        ) {
+
+          script.parentNode.removeChild(
+            script
+          );
+
+        }
+
+      }
 
 
-            reject(
-              new Error(
-                'Unable to connect to E-SAFE API.'
-              )
-            );
+      function fail(
+        message
+      ) {
 
-          },
-          15000
+        if (
+          finished
+        ) {
+
+          return;
+
+        }
+
+
+        finished =
+          true;
+
+
+        cleanup();
+
+
+        reject(
+          new Error(
+            message
+          )
         );
 
+      }
+
+
+      /*
+       * GLOBAL JSONP CALLBACK
+       */
 
       window[
         callbackName
@@ -2748,12 +2850,13 @@ function callScannerAPI(
             true;
 
 
-          clearTimeout(
-            timeout
-          );
-
-
           cleanup();
+
+
+          console.log(
+            '[E-SAFE API RESPONSE]',
+            data
+          );
 
 
           resolve(
@@ -2763,47 +2866,85 @@ function callScannerAPI(
         };
 
 
+      /*
+       * SCRIPT LOAD ERROR
+       */
+
       script.onerror =
-        function() {
+        function(event) {
 
-          if (
-            finished
-          ) {
-
-            return;
-
-          }
-
-
-          finished =
-            true;
-
-
-          clearTimeout(
-            timeout
+          console.error(
+            '[E-SAFE JSONP SCRIPT ERROR]',
+            event
           );
 
 
-          cleanup();
-
-
-          reject(
-            new Error(
-              'Unable to connect to E-SAFE API.'
-            )
+          fail(
+            'Unable to connect to E-SAFE API.'
           );
 
         };
 
 
-      script.src =
+      /*
+       * Timeout
+       */
+
+      timeoutId =
+        setTimeout(
+          function() {
+
+            console.error(
+              '[E-SAFE JSONP TIMEOUT]',
+              API_URL
+            );
+
+
+            fail(
+              'E-SAFE API did not respond. Please check the Apps Script deployment.'
+            );
+
+          },
+          API_TIMEOUT
+        );
+
+
+      /*
+       * Build final URL.
+       */
+
+      const separator =
+        API_URL.includes('?')
+          ? '&'
+          : '?';
+
+
+      const requestUrl =
         API_URL +
-        (
-          API_URL.includes('?')
-            ? '&'
-            : '?'
-        ) +
+        separator +
         query.toString();
+
+
+      console.log(
+        '[E-SAFE API REQUEST]',
+        requestUrl
+      );
+
+
+      /*
+       * Use script injection.
+       */
+
+      script.async =
+        true;
+
+
+      script.type =
+        'text/javascript';
+
+
+      script.src =
+        requestUrl;
 
 
       document
@@ -2833,6 +2974,21 @@ async function recordAttendanceFromScanner(
 
   try {
 
+    console.log(
+      '[E-SAFE SCAN REQUEST]',
+      {
+        qrToken:
+          qrToken,
+
+        type:
+          attendanceMode,
+
+        scanner:
+          SCANNER_NAME
+      }
+    );
+
+
     const result =
       await callScannerAPI(
         'scan',
@@ -2856,6 +3012,12 @@ async function recordAttendanceFromScanner(
     );
 
 
+    console.log(
+      '[E-SAFE SCAN RESULT]',
+      result
+    );
+
+
     if (
       !result ||
       result.success !== true
@@ -2874,16 +3036,20 @@ async function recordAttendanceFromScanner(
       else {
 
         showErrorResult(
+
           result &&
           (
             result.message ||
             result.error
           )
+
             ? (
                 result.message ||
                 result.error
               )
+
             : 'Unable to record attendance.'
+
         );
 
       }
@@ -3299,11 +3465,6 @@ async function closeResult() {
     'success'
   );
 
-
-  /*
-   * Keep camera running.
-   */
-
 }
 
 
@@ -3337,11 +3498,6 @@ async function closeScanner() {
   await stopCamera();
 
 
-  /*
-   * If scanner was opened from the E-SAFE portal,
-   * return to the previous page.
-   */
-
   if (
     window.history.length > 1
   ) {
@@ -3352,10 +3508,6 @@ async function closeScanner() {
 
   }
 
-
-  /*
-   * Fallback.
-   */
 
   window.location.href =
     'about:blank';
