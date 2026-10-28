@@ -296,7 +296,7 @@ async function startCamera() {
     /* Preferred mobile route: ask for the environment/rear camera. */
     if (!scanner) {
       try {
-        await startScannerWith({ facingMode: { ideal: 'environment' } });
+        await startScannerWith({facingMode: 'environment'});
       } catch (rearError) {
         console.warn('[E-SAFE] Rear camera preference failed; trying enumerated cameras:', rearError);
         await destroyScanner();
