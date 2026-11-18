@@ -596,24 +596,46 @@ function showErrorResult(message) {
   setStatus(message || 'Scan error.', 'error');
 }
 
+
 function fillStudentResult(student) {
-  document.getElementById('studentName').textContent = student.name || 'Student';
-  document.getElementById('studentLRN').textContent = student.lrn || '—';
-  document.getElementById('studentGrade').textContent = student.grade || '—';
-  document.getElementById('studentSection').textContent = student.section || '—';
-  document.getElementById('studentStatus').textContent = student.status || 'ACTIVE';
+
+  student = student || {};
+
+  document.getElementById('studentName').textContent =
+    student.name || 'Student';
+
+  document.getElementById('studentLRN').textContent =
+    student.lrn || '—';
+
+  document.getElementById('studentGrade').textContent =
+    student.grade || '—';
+
+  document.getElementById('studentSection').textContent =
+    student.section || '—';
+
+  document.getElementById('studentStatus').textContent =
+    student.status || 'ACTIVE';
 
   const photo = document.getElementById('studentPhoto');
-  if (student.photoUrl) {
-    photo.src = student.photoUrl;
+
+  const photoData =
+    student.photoDataUrl || '';
+
+  photo.onerror = function() {
+    photo.style.display = 'none';
+    photo.removeAttribute('src');
+  };
+
+  if (photoData) {
+
+    photo.src = photoData;
     photo.style.display = 'block';
-    photo.onerror = function() {
-      photo.style.display = 'none';
-      photo.removeAttribute('src');
-    };
+
   } else {
+
     photo.removeAttribute('src');
     photo.style.display = 'none';
+
   }
 }
 
