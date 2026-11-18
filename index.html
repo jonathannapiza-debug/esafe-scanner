@@ -246,7 +246,7 @@ function populateCameraList() {
 
 function getScannerConfig() {
   return {
-    fps: 10,
+    fps: 8,
     qrbox: function(viewfinderWidth, viewfinderHeight) {
       const availableSize = Math.floor(Math.min(viewfinderWidth, viewfinderHeight) * 0.65);
       const size = Math.max(160, Math.min(availableSize, 320));
@@ -498,7 +498,6 @@ function callScannerAPI(action, params) {
       if (finished) return;
       finished = true;
       cleanup();
-      console.log('[E-SAFE API RESPONSE]', data);
       resolve(data);
     };
 
@@ -528,7 +527,6 @@ async function recordAttendanceFromScanner(qrToken) {
     });
 
     showLoading(false);
-    console.log('[E-SAFE SCAN RESULT]', result);
 
     if (!result || result.success !== true) {
       if (result && result.duplicate) {
