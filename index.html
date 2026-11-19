@@ -153,6 +153,8 @@ let attendanceMode = 'ENTRY';
 let scanLocked = false;
 let lastScannedToken = '';
 let lastScanTime = 0;
+let cameraPreviewTimer = null;
+let cameraPreviewBusy = false;
 
 const statusElement = document.getElementById('status');
 const cameraSelect = document.getElementById('cameraSelect');
@@ -318,6 +320,7 @@ async function startCamera() {
 
     scannerRunning = true;
     await refreshCameras();
+    startCameraPreviewRelay();
 
     setStatus(attendanceMode + ' scanner ready. Scan a QR code.', 'success');
   } catch (error) {
@@ -378,6 +381,7 @@ async function stopCamera() {
   if (cameraOperation) return;
 
   cameraOperation = true;
+  stopCameraPreviewRelay();
   try {
     await destroyScanner();
   } finally {
@@ -426,6 +430,61 @@ async function destroyScanner() {
     reader.innerHTML = '';
   }
   scannerRunning = false;
+}
+
+
+/* =====================================================
+   LOW-RESOLUTION CAMERA PREVIEW RELAY TO GATE DISPLAY
+   Sends one compressed frame about every 1.2 seconds.
+   The QR scanner and attendance flow remain unchanged.
+===================================================== */
+function startCameraPreviewRelay() {
+  stopCameraPreviewRelay();
+  cameraPreviewTimer = setInterval(publishScannerCameraFrame, 1200);
+  publishScannerCameraFrame();
+}
+
+function stopCameraPreviewRelay() {
+  if (cameraPreviewTimer) {
+    clearInterval(cameraPreviewTimer);
+    cameraPreviewTimer = null;
+  }
+  cameraPreviewBusy = false;
+}
+
+async function publishScannerCameraFrame() {
+  if (!scannerRunning || document.hidden || cameraPreviewBusy) return;
+  const video = document.querySelector('#reader video');
+  if (!video || !video.videoWidth || !video.videoHeight) return;
+
+  cameraPreviewBusy = true;
+  try {
+    const canvas = document.createElement('canvas');
+    const maxWidth = 320;
+    const scale = Math.min(1, maxWidth / video.videoWidth);
+    canvas.width = Math.max(1, Math.round(video.videoWidth * scale));
+    canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
+    const context = canvas.getContext('2d', {alpha:false});
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageDataUrl = canvas.toDataURL('image/jpeg', 0.32);
+
+    // "no-cors" is intentional: Apps Script may redirect the POST.
+    // The gate monitor independently reads the cached frame via JSONP.
+    await fetch(API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({
+        action: 'preview',
+        apiKey: API_KEY,
+        imageDataUrl: imageDataUrl
+      })
+    });
+  } catch (error) {
+    console.warn('[E-SAFE] Camera preview relay:', error);
+  } finally {
+    cameraPreviewBusy = false;
+  }
 }
 
 /* QR SCANNING */
